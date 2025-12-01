@@ -4,21 +4,30 @@ const userSchema = new mongoose.Schema(
   {
     userName: {
       type: String,
+      unique: true,
       required: [true, "UserName is required"],
+      minlength: [3, "username should atleast contain 3 character"],
+      maxlength: [20, "username should be of atmost 20 character"],
       trim: true,
     },
     email: {
       type: String,
-      required: [true, "Emial is required"],
+      required: [true, "Email is required"],
       unique: true,
       lowerCase: true,
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
     password: {
       type: String,
       required: [true, "Password is Required"],
       minlength: [6, "Password should have atleast 6 character"],
       select: false,
+      trim: true,
+      match: [
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must be strong (8+ chars, upper, lower, number, symbol)",
+      ],
     },
     role: {
       type: String,
@@ -48,5 +57,26 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        // obj is orignal object(not modify) ret returned obj (modyfy)
+        delete ret.password; // remove password
+        delete ret.__v; // remove mongoose version key
+        return ret;
+      },
+    },
+    toObject: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  }
 );
+
+const userModel = mongoose.model("User", userSchema);
+
+export default userModel;
