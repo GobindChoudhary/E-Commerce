@@ -22,12 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is Required"],
       minlength: [6, "Password should have atleast 6 character"],
-      select: false,
       trim: true,
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must be strong (8+ chars, upper, lower, number, symbol)",
-      ],
     },
     role: {
       type: String,
@@ -67,13 +62,13 @@ const userSchema = new mongoose.Schema(
         return ret;
       },
     },
-    toObject: {
-      transform(doc, ret) {
-        delete ret.password;
-        delete ret.__v;
-        return ret;
-      },
-    },
+    // toObject: {
+    //   transform(doc, ret) {
+    //     delete ret.password;
+    //     delete ret.__v;
+    //     return ret;
+    //   },
+    // },
   }
 );
 
